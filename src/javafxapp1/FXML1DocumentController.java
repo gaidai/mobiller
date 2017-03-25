@@ -36,6 +36,7 @@ public class FXML1DocumentController implements Initializable {
     public Label label1;
     public Label label2;
     public Label label3;
+    public MenuItem expXlS;
     public MenuItem exp;
     public MenuItem imp;
     @FXML
@@ -150,6 +151,13 @@ public class FXML1DocumentController implements Initializable {
     private void expAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
       writeInfoFile();
     }
+   
+    @FXML
+    private void expXLSAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
+        XLS x = new XLS();
+        x.writeXLS();
+        alXlS ();
+    }
     
     @FXML
     private void selectsqlButtonAction(ActionEvent event) throws ClassNotFoundException, SQLException {
@@ -259,6 +267,15 @@ public class FXML1DocumentController implements Initializable {
        alert.setTitle("Information Dialog");
        alert.setHeaderText(a);
        alert.setContentText(b);
+
+       alert.showAndWait();
+   
+   }
+    public void alXlS (){
+       alert = new Alert(AlertType.INFORMATION);
+       alert.setTitle("Information Dialog");
+       alert.setHeaderText("Operation sucessful");
+       alert.setContentText("XlS file saved");
 
        alert.showAndWait();
    

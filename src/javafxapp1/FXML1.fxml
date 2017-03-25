@@ -25,7 +25,8 @@
             <items>
               <MenuItem mnemonicParsing="false" text="Close" />
                   <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
-                  <MenuItem fx:id="exp" mnemonicParsing="false" onAction="#expAction" text="Export to file" />
+                  <MenuItem fx:id="exp" mnemonicParsing="false" onAction="#expAction" text="Export to file txt" />
+                  <MenuItem fx:id="expXlS" mnemonicParsing="false" onAction="#expXLSAction" text="Export to file XLS" />
                   <MenuItem fx:id="imp" mnemonicParsing="false" onAction="#impAction" text="Import from file" />
             </items>
           </Menu>
