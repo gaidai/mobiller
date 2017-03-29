@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package javafxapp1;
 
 import java.io.*;
@@ -21,9 +17,14 @@ import javafx.scene.control.*;
 import javafx.util.Duration;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
 
 /**
  *
@@ -37,6 +38,7 @@ public class FXML1DocumentController implements Initializable {
     public Label label2;
     public Label label3;
     public MenuItem expXlS;
+    public MenuItem impXlS;
     public MenuItem exp;
     public MenuItem imp;
     @FXML
@@ -112,7 +114,7 @@ public class FXML1DocumentController implements Initializable {
                   //  pw.println( K.set(selectedIndex, new Friend(numb.getCellData(selectedIndex)-1, fname.getCellData(selectedIndex), name.getCellData(selectedIndex), mobile.getCellData(selectedIndex))));
      }
         pw.close();
-          al ("Данные записаны в файл :","mobilesfile.txt");
+          al ("Information Dialog","Данные записаны в файл :","mobilesfile.txt");
     }} catch (FileNotFoundException e) {
         
         System.out.println("ошибка записи в файл");
@@ -145,7 +147,7 @@ public class FXML1DocumentController implements Initializable {
                 //while ((sCurrentLine = bfr.readLine()) != null) {
 		//		System.out.println(sCurrentLine);
 		//	}
-           al ("Данные извлечены из файла :","mobilesfile.txt");
+           al("Information Dialog","Данные извлечены из файла :","mobilesfile.txt");
      }
     @FXML
     private void expAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
@@ -154,9 +156,18 @@ public class FXML1DocumentController implements Initializable {
    
     @FXML
     private void expXLSAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
-        XLS x = new XLS();
-        x.writeXLS();
-        alXlS ();
+        TextInputDialog ();
+        al("Information Dialog","Operation sucessful","XlS file was saved");
+        
+    }
+    @FXML
+    private void impXLSAction(ActionEvent event)throws UnsupportedEncodingException, IOException{
+      //  XLS xi = new XLS();
+      // TextInputDialog ();
+       
+       TextOutDialog() ;
+        //al("Information Dialog","Operation sucessful","XlS file saved");
+       // alert2();
     }
     
     @FXML
@@ -262,22 +273,84 @@ public class FXML1DocumentController implements Initializable {
         return time;
      
     }
-    public void al (String a, String b){
+    
+    public void al (String a,String b,String c){
        alert = new Alert(AlertType.INFORMATION);
-       alert.setTitle("Information Dialog");
-       alert.setHeaderText(a);
-       alert.setContentText(b);
+       alert.setTitle(a);
+       alert.setHeaderText(b);
+       alert.setContentText(c);
 
        alert.showAndWait();
    
    }
-    public void alXlS (){
-       alert = new Alert(AlertType.INFORMATION);
-       alert.setTitle("Information Dialog");
-       alert.setHeaderText("Operation sucessful");
-       alert.setContentText("XlS file saved");
+    public void alert2 (){
+        Alert alert2 = new Alert(AlertType.CONFIRMATION);
+        XLS xl = new XLS();
+       
 
-       alert.showAndWait();
-   
-   }
+
+       alert2.showAndWait();
+       
+    }
+    public void TextInputDialog () throws IOException{
+        TextInputDialog txtdialog = new TextInputDialog ();
+        txtdialog.setHeaderText("Write the name for new XlS file:");
+        txtdialog.setTitle("Input the name");
+        txtdialog.getEditor();
+        ButtonType apply = new ButtonType("appllly", ButtonData.APPLY);
+        ButtonType ok= new ButtonType("oookkkk", ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType( "cancellar", ButtonData.CANCEL_CLOSE);
+        txtdialog.getEditor().setPromptText("Enter address");
+        Optional<String> result = txtdialog.showAndWait();
+        txtdialog.getDialogPane().getButtonTypes().setAll( ok, cancelar);
+
+
+	if (result.isPresent()) {
+		String filename = result.get().trim();
+                XLS x = new XLS();
+		x.writeXLS(filename);
+	}
+    }    
+    public void  TextOutDialog () {
+        try{
+              FileChooser fileChooser = new FileChooser();
+              //Set extension filter
+              FileChooser.ExtensionFilter xlsFilter = new FileChooser.ExtensionFilter("XLS files (*.xls)", "*.xls");
+              FileChooser.ExtensionFilter txtFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+              fileChooser.getExtensionFilters().add(xlsFilter);
+              fileChooser.getExtensionFilters().add(txtFilter);
+              
+              //Show open file dialog
+              Stage chooser = new Stage();
+              
+              File file = fileChooser.showOpenDialog(chooser);
+              
+              
+              if( file.getPath()!= null ){ 
+              XLS choserxls = new XLS();
+              choserxls.readXLS(file.getPath());
+              } else {  chooser.close();}
+        } catch ( NullPointerException e ){}
+    }
+   /* public void Filechooser(){
+     FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Image");
+      final Label labelSelectedDirectory = new Label();
+         
+        
+                DirectoryChooser directoryChooser = new DirectoryChooser();
+                File selectedDirectory = 
+                        directoryChooser.showDialog(JavaFXAp);
+                 
+                if(selectedDirectory == null){
+                    labelSelectedDirectory.setText("No Directory selected");
+                }else{
+                    labelSelectedDirectory.setText(selectedDirectory.getAbsolutePath());
+                }
+             
+            
+              
+        
+        
+    }*/
 }

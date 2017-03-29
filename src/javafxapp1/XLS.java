@@ -20,7 +20,7 @@ import org.apache.poi.ss.usermodel.Workbook;
  * @author user
  */
 public class XLS {
-    public void writeXLS() throws FileNotFoundException, IOException{
+    public void writeXLS(String a) throws FileNotFoundException, IOException{
         Workbook wb = new HSSFWorkbook();
         Sheet sh = wb.createSheet("sheet1");
         
@@ -38,7 +38,7 @@ public class XLS {
                 cell3.setCellValue("d");
                 
                 
-        FileOutputStream fos = new FileOutputStream("mobiller.xls");
+        FileOutputStream fos = new FileOutputStream(a + ".xls");
         
         
         
@@ -49,5 +49,8 @@ public class XLS {
     
         
     }
-    
+    public void readXLS(String a){
+        System.out.println(a);
+                
+    }
 }
