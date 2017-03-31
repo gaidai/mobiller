@@ -369,7 +369,7 @@ public class FXML1DocumentController implements Initializable {
 		//x.writeXLS(filename);
 	}
     }    
-    public void  ChooseXlS () {
+    public void  ChooseXlS () throws IOException {
         try{
               FileChooser fileChooser = new FileChooser();
               //Set extension filter
@@ -387,6 +387,7 @@ public class FXML1DocumentController implements Initializable {
               if( file.getPath()!= null ){ 
               XLS choserxls = new XLS();
               choserxls.readXLS(file.getPath());
+              
               } else {  chooser.close();}
         } catch ( NullPointerException e ){}
     }
