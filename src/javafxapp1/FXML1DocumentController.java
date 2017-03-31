@@ -3,7 +3,11 @@ package javafxapp1;
 
 import java.io.*;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -16,7 +20,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.util.Duration;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -48,23 +54,14 @@ public class FXML1DocumentController implements Initializable {
     private Button button3;
     private Button selectsql;
     private Button insertsql;
-    /**
-     *
-     */
+    
+    
     public TextField c1;
-
-    /**
-     *
-     */
     public TextField c2;
-
-    /**
-     *
-     */
     public TextField c3;
-    private ObservableList<Friend> K = FXCollections.observableArrayList();
+    public ObservableList<Friend> K = FXCollections.observableArrayList();
     @FXML
-    private TableView<Friend> tablebook;
+    public TableView<Friend> tablebook;
  
     @FXML
     private TableColumn<Friend, Integer> numb;
@@ -81,6 +78,7 @@ public class FXML1DocumentController implements Initializable {
     private TableColumn<Friend, String> date;
     
     String n = "";
+    // animation JavaFX
     public void moive (Label a) {
         
         int con = 15;
@@ -94,6 +92,9 @@ public class FXML1DocumentController implements Initializable {
         
     @FXML
     private void impAction(ActionEvent event) throws IOException {
+        
+        
+        
         readfile();
     }
     
@@ -140,15 +141,75 @@ public class FXML1DocumentController implements Initializable {
            String m = stt.nextToken();
            String d = stt.nextToken();
            
-           K.add(new Friend(K.size()+1, f, na, m , d));    
+           read(f, na, m , d);    
            }}} catch (IOException e) {
             // log error
           } 
-                //while ((sCurrentLine = bfr.readLine()) != null) {
-		//		System.out.println(sCurrentLine);
-		//	}
+                
            al("Information Dialog","Данные извлечены из файла :","mobilesfile.txt");
      }
+     static Connection conn1 = null;
+     static Statement stmt1 = null;
+                        
+         public  void selectsql () throws ClassNotFoundException, SQLException, ParseException {
+                                Class.forName("com.mysql.jdbc.Driver");
+
+
+                                System.out.println("Connecting to database...");
+                                conn1 = DriverManager.getConnection("jdbc:mysql://localhost:3306/testing","sgaidai","honda250");
+                                System.out.println("Creating statement...");
+                                stmt1 = conn1.createStatement();
+                                System.out.println("Created statement...");
+                                String sql;
+                                sql = "SELECT*from mobiller;";
+
+                                ResultSet rs = stmt1.executeQuery(sql);
+                              //System.out.print(rs);
+                                 List tmp = new ArrayList(); 
+                                 FXML1DocumentController fcon = new FXML1DocumentController();
+                                 FXML1DocumentController dcon = new FXML1DocumentController();
+                                 ObservableList<Friend> F = FXCollections.observableArrayList();
+                                 String m;
+                                 String f;
+                                 String n;
+                                 String d;
+
+                              while(rs.next()){
+                                 Friend fri = new Friend();
+                                 m = rs.getString("mobil");
+                                 f = rs.getString("fname");
+                                 n = rs.getString("name");
+                                 d = rs.getString("date");
+
+                                read(f, n, m,  d);
+
+                              }
+
+
+                              rs.close();
+                              stmt1.close();
+                              conn1.close();
+                              
+                            //finally block used to close resources
+                              try{
+                                 if(stmt1!=null)
+                                    stmt1.close();
+                              }catch(SQLException se2){
+                              }// nothing we can do
+                              try{
+                                 if(conn1!=null)
+                                    conn1.close();
+                              }catch(SQLException se){
+                                 se.printStackTrace();
+                              }
+
+                            } 
+
+           
+          public  void  read (String a,String b,String c,String d){
+                 K.add(new Friend(K.size()+1, a, b, c , d)); 
+              
+          }
     @FXML
     private void expAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
       writeInfoFile();
@@ -156,7 +217,9 @@ public class FXML1DocumentController implements Initializable {
    
     @FXML
     private void expXLSAction(ActionEvent event) throws UnsupportedEncodingException, IOException {
-        TextInputDialog ();
+       XLS xe = new XLS();
+      xe.writeXLS( K );
+        
         al("Information Dialog","Operation sucessful","XlS file was saved");
         
     }
@@ -165,17 +228,15 @@ public class FXML1DocumentController implements Initializable {
       //  XLS xi = new XLS();
       // TextInputDialog ();
        
-       TextOutDialog() ;
+       ChooseXlS() ;
         //al("Information Dialog","Operation sucessful","XlS file saved");
        // alert2();
     }
     
     @FXML
-    private void selectsqlButtonAction(ActionEvent event) throws ClassNotFoundException, SQLException {
+    private void selectsqlButtonAction(ActionEvent event) throws ClassNotFoundException, SQLException, ParseException {
         System.out.println("selectsqlButtonAction");
-                            
-        SQLsel tab = new SQLsel();
-        SQLsel.selectsql();
+        selectsql();
     }
     @FXML
     private void insertsqlButtonAction(ActionEvent event) throws ClassNotFoundException, SQLException {
@@ -213,7 +274,7 @@ public class FXML1DocumentController implements Initializable {
     
     @FXML
     private void handleButton3Action(ActionEvent event) throws ParseException {
-        System.out.println("save");
+        System.out.println("SAVE");
         
         if( n.equals(c1.getText())) { 
             System.out.println("c1 empty");
@@ -230,6 +291,7 @@ public class FXML1DocumentController implements Initializable {
     }
     
     @FXML 
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
        
  
@@ -244,17 +306,13 @@ public class FXML1DocumentController implements Initializable {
         tablebook.setItems(K);
     }
     
-        public void initData() {
-        K.add(new Friend(K.size()+1, "Alex", "qwerty", "alex@mail.com","0"));
-        K.add(new Friend(K.size()+1, "Bob", "dsfsdfw", "bob@mail.com","0"));
-        K.add(new Friend(K.size()+1, "Jeck", "dsfdsfwe", "Jeck@mail.com","0"));
-        K.add(new Friend(K.size()+1, "Mike", "iueern", "mike@mail.com","0"));
-        K.add(new Friend(K.size()+1, "colin", "woeirn", "colin@mail.com","0"));
-        }
+       
         public void wr() throws ParseException {
             K.add(new Friend(K.size()+1, c1.getText(), c2.getText(), c3.getText(), getdate() ));
+          //  System.out.println("***"+K.size()+"***");
         }
- 
+       
+          
     String year;
     String month;
     String day;
@@ -308,10 +366,10 @@ public class FXML1DocumentController implements Initializable {
 	if (result.isPresent()) {
 		String filename = result.get().trim();
                 XLS x = new XLS();
-		x.writeXLS(filename);
+		//x.writeXLS(filename);
 	}
     }    
-    public void  TextOutDialog () {
+    public void  ChooseXlS () {
         try{
               FileChooser fileChooser = new FileChooser();
               //Set extension filter
@@ -353,4 +411,5 @@ public class FXML1DocumentController implements Initializable {
         
         
     }*/
+    
 }

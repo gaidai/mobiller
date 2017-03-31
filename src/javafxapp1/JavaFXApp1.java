@@ -1,7 +1,6 @@
 
 package javafxapp1;
 
-import java.awt.Paint;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 
 import javafx.stage.Stage;
 /**
